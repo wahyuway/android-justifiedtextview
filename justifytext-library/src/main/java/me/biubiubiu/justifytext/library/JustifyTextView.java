@@ -47,7 +47,7 @@ public class JustifyTextView extends TextView {
                 canvas.drawText(line, 0, mLineY, paint);
             }
 
-            mLineY += getLineHeight() * 1.5;
+            mLineY += getLineHeight();
         }
     }
 
@@ -62,22 +62,13 @@ public class JustifyTextView extends TextView {
             line = line.substring(3);
         }
 
-        int nbSpaces = 0;
-        for (int i = 0; i < line.length(); i++) {
-            if (line.charAt(i) == ' ') {
-                nbSpaces++;
-            }
-        }
-        float d = (mViewWidth - lineWidth) / (nbSpaces - 1);
+        float d = (mViewWidth - lineWidth) / (line.length() - 1);
         
         for (int i = 0; i < line.length(); i++) {
             String c = String.valueOf(line.charAt(i));
             float cw = StaticLayout.getDesiredWidth(c, getPaint());
             canvas.drawText(c, x, mLineY, getPaint());
-            x += cw;
-            if (line.charAt(i) == ' ') {
-                x += d;
-            }
+            x += cw + d;
         }
     }
 
