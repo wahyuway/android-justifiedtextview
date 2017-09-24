@@ -31,7 +31,7 @@ public class JustifyTextView extends TextView {
         paint.setColor(getCurrentTextColor());
         paint.drawableState = getDrawableState();
         mViewWidth = getMeasuredWidth();
-        String text = (String) getText();
+        String text = getText().toString();
         mLineY = 0;
         mLineY += getTextSize() * 1.5;
         Layout layout = getLayout();
@@ -47,7 +47,7 @@ public class JustifyTextView extends TextView {
                 canvas.drawText(line, 0, mLineY, paint);
             }
 
-            mLineY += getLineHeight();
+            mLineY += getLineHeight() * 1.5;
         }
     }
 
@@ -62,12 +62,22 @@ public class JustifyTextView extends TextView {
             line = line.substring(3);
         }
 
-        float d = (mViewWidth - lineWidth) / line.length() - 1;
+        int nbSpaces = 0;
+        for (int i = 0; i < line.length(); i++) {
+            if (line.charAt(i) == ' ') {
+                nbSpaces++;
+            }
+        }
+        float d = (mViewWidth - lineWidth) / (nbSpaces - 1);
+        
         for (int i = 0; i < line.length(); i++) {
             String c = String.valueOf(line.charAt(i));
             float cw = StaticLayout.getDesiredWidth(c, getPaint());
             canvas.drawText(c, x, mLineY, getPaint());
-            x += cw + d;
+            x += cw;
+            if (line.charAt(i) == ' ') {
+                x += d;
+            }
         }
     }
 
@@ -76,11 +86,10 @@ public class JustifyTextView extends TextView {
     }
 
     private boolean needScale(String line) {
-        if (line.length() == 0) {
+        if (line == null || line.length() == 0) {
             return false;
         } else {
             return line.charAt(line.length() - 1) != '\n';
         }
     }
-
 }
